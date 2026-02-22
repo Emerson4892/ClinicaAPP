@@ -1,12 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    // 🔐 AUTENTICACIÓN (en todas las páginas)
+    //AUTENTICACIÓN 
     iniciarRegistro();
     iniciarLogin();
     protegerPaginas();
     mostrarBienvenida();
 
-    // 📅 SOLO si existe el formulario de citas
+   
     if (document.getElementById("citaForm")) {
         verificarSesionEnCitas();
         iniciarCitas();
@@ -16,9 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-// ==================================================
-// 🔐 AUTENTICACIÓN
-// ==================================================
+//autenticacion
 
 function iniciarRegistro() {
 
@@ -32,7 +30,7 @@ function iniciarRegistro() {
         const correo = document.getElementById("correo").value.trim();
         const password = document.getElementById("nuevaPassword").value;
 
-        let usuarios = obtenerUsuarios();
+        const usuarios = obtenerUsuarios();
 
         if (usuarios.some(u => u.usuario === usuario)) {
             alert("Usuario ya existe");
@@ -59,7 +57,7 @@ function iniciarLogin() {
         const usuario = document.getElementById("usuario").value.trim();
         const password = document.getElementById("password").value;
 
-        let usuarios = obtenerUsuarios();
+        const usuarios = obtenerUsuarios();
 
         const valido = usuarios.find(u =>
             u.usuario === usuario && u.password === password
@@ -100,15 +98,13 @@ function mostrarBienvenida() {
 }
 
 
-function logout() {
+window.logout = function() {
     localStorage.removeItem("sesionActiva");
     window.location.href = "index.html";
 }
 
 
-// ==================================================
-// 📅 SISTEMA DE CITAS
-// ==================================================
+//sistema de citas
 
 function verificarSesionEnCitas() {
 
@@ -142,7 +138,7 @@ function iniciarCitas() {
             return;
         }
 
-        let citas = obtenerCitas();
+        const citas = obtenerCitas();
 
         const ocupada = citas.find(c =>
             c.fecha === fecha &&
@@ -190,9 +186,9 @@ function mostrarCitas() {
                 <td>${cita.fecha}</td>
                 <td>${cita.hora}</td>
                 <td>
-                    <button onclick="eliminarCita(${cita.id})">
-                        ❌
-                    </button>
+                    <button class="btn-danger" style="padding: 5px 10px; font-size: 14px;" onclick="eliminarCita(${cita.id})">
+                       Eliminar
+                </button>
                 </td>
             </tr>
         `;
@@ -202,7 +198,7 @@ function mostrarCitas() {
 
 function eliminarCita(id) {
 
-    let citas = obtenerCitas();
+    const citas = obtenerCitas();
     citas = citas.filter(c => c.id !== id);
     guardarCitas(citas);
 
@@ -211,6 +207,14 @@ function eliminarCita(id) {
 }
 
 
+window.eliminarCita = function(id) {
+    let citas = obtenerCitas();
+    citas = citas.filter(c => c.id !== id);
+    guardarCitas(citas);
+
+    mostrarCitas();
+    mostrarHorariosOcupados();
+}
 function mostrarHorariosOcupados() {
 
     const contenedor = document.getElementById("horariosOcupados");
@@ -227,10 +231,7 @@ function mostrarHorariosOcupados() {
         citas.map(c => `${c.fecha} - ${c.hora}`).join("<br>");
 }
 
-
-// ==================================================
-// 📦 FUNCIONES AUXILIARES
-// ==================================================
+//funciones
 
 function obtenerUsuarios() {
     return JSON.parse(localStorage.getItem("usuarios")) || [];
