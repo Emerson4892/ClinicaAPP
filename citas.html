@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Gestión de Citas</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+  <h2>Agendar Cita Médica</h2>
+
+  <form id="citaForm">
+    <label>Nombre:</label>
+    <input type="text" id="nombre" required>
+
+    <label>Especialidad:</label>
+    <select id="especialidad">
+      <option>Medicina General</option>
+      <option>Pediatría</option>
+      <option>Dermatología</option>
+    </select>
+
+    <label>Fecha:</label>
+    <input type="date" id="fecha" required>
+
+    <label>Hora:</label>
+    <input type="time" id="hora" required>
+
+    <button type="submit">Confirmar Cita</button>
+  </form>
+
+  <p id="mensaje" style="text-align:center; margin-top:10px;"></p>
+
+  <hr>
+
+ <table border="1" width="100%">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Especialidad</th>
+      <th>Fecha</th>
+      <th>Hora</th>
+      <th>Acción</th>
+    </tr>
+  </thead>
+  <tbody id="tablaCitas"></tbody>
+</table>
+
+  <br>
+  <button onclick="location.href='dashboard.html'">
+    Volver
+  </button>
+  <h4>Horarios ocupados:</h4>
+<ul id="horariosOcupados"></ul>
+<p id="recordatorio" style="color:blue;"></p>
+</div>
+<script src="script.js"></script>
+</body>
+</html>

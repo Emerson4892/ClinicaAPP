@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Registro</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="login-card">
+  <div class="card-header">
+    <h1>Crear Cuenta</h1>
+  </div>
+
+  <form id="registroForm">
+    <div class="form-group">
+      <label>Usuario</label>
+      <input type="text" id="nuevoUsuario" required>
+    </div>
+
+    <div class="form-group">
+      <label>Correo</label>
+      <input type="email" id="correo" required>
+    </div>
+
+    <div class="form-group">
+      <label>Contraseña</label>
+      <input type="password" id="nuevaPassword" required>
+    </div>
+
+    <input type="submit" value="Registrarse" class="login-button">
+  </form>
+
+  <p id="mensajeRegistro"></p>
+
+  <p style="text-align:center;">
+    <a href="index.html">Volver al Login</a>
+  </p>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

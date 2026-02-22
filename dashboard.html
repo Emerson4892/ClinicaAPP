@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Principal | Clínica Salud Integral</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dashboard-body">
+
+    <main class="dashboard">
+
+        <header class="dashboard-header">
+            <h1>🏥 Clínica Salud Integral</h1>
+            <p id="bienvenida"></p>
+        </header>
+
+        <section class="dashboard-content">
+
+            <div class="card">
+                <h2>📅 Gestión de Citas</h2>
+                <p>Programa y administra las citas médicas.</p>
+                <button class="btn-primary"
+                        onclick="location.href='citas.html'">
+                    Agendar Cita
+                </button>
+            </div>
+
+            <div class="card">
+                <h2>🚪 Sesión</h2>
+                <p>Finaliza tu sesión de manera segura.</p>
+                <button class="btn-danger"
+                        onclick="logout()">
+                    Cerrar Sesión
+                </button>
+            </div>
+
+        </section>
+
+    </main>
+
+<script src="script.js"></script>
+</body>
+</html>

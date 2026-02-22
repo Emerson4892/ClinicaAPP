@@ -1,0 +1,169 @@
+body {
+  font-family: Arial;
+  background-color: #f4f6f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* LOGIN */
+.login-card {
+  background: #f8f8f8;
+  padding: 20px;
+  width: 90%;            
+  max-width: 400px;      
+  border-radius: 10px;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+}
+
+.card-header {
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+input, select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+}
+
+.login-button {
+  background: #007bff;
+  color: white;
+  padding: 10px;
+  border: none;
+  width: 100%;
+  border-radius: 5px;
+}
+
+.login-button:hover {
+  background: #0069d9;
+}
+
+/* SISTEMA */
+.container {
+ background: white;
+  padding: 20px;
+  width: 90%;           
+  max-width: 600px;      
+  border-radius: 10px;
+  box-shadow: 0 0 10px gray;
+}
+
+button {
+  background: #007BFF;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  width: 100%;
+}
+
+button:hover {
+  background: #0056b3;
+}
+
+table {
+  margin-top: 10px;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 5px;
+  text-align: center;
+}
+/* ================= DASHBOARD MODERNO ================= */
+
+.dashboard-body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #1e90ff, #00c6ff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.dashboard {
+  width: 90%;
+  max-width: 900px;
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+
+.dashboard-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.dashboard-header h1 {
+  margin-bottom: 10px;
+}
+
+.dashboard-header p {
+  color: gray;
+}
+
+.dashboard-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 25px;
+}
+
+.card {
+  background: #f8f9fa;
+  padding: 25px;
+  border-radius: 15px;
+  text-align: center;
+  transition: 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+.card h2 {
+  margin-bottom: 10px;
+}
+
+.card p {
+  margin-bottom: 20px;
+  color: #555;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #1e90ff, #0066ff);
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #ff4d4d, #cc0000);
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.btn-danger:hover {
+  opacity: 0.9;
+}
