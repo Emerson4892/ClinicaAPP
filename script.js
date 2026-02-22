@@ -1,250 +1,142 @@
+
 document.addEventListener("DOMContentLoaded", () => {
+    const saludo = document.getElementById("bienvenida");
+    const usuarioActivo = localStorage.getItem("sesionActiva");
+    if (saludo && usuarioActivo) {
+        saludo.textContent = "Bienvenido(a), " + usuarioActivo;
+    }
 
-    //AUTENTICACIÓN 
-    iniciarRegistro();
-    iniciarLogin();
-    protegerPaginas();
-    mostrarBienvenida();
+    if (document.getElementById("loginForm")) {
+        iniciarLogin();
+    }
+    
+    if (document.getElementById("registroForm")) {
+        iniciarRegistro();
+    }
 
-   
     if (document.getElementById("citaForm")) {
-        verificarSesionEnCitas();
+        emailjs.init("F9mM3APkBfNq-vEpV"); 
         iniciarCitas();
         mostrarCitas();
         mostrarHorariosOcupados();
     }
-
 });
 
-//autenticacion
-
+//login
 function iniciarRegistro() {
-
     const form = document.getElementById("registroForm");
-    if (!form) return;
-
-    form.addEventListener("submit", e => {
+    form.addEventListener("submit", (e) => {
         e.preventDefault();
-
         const usuario = document.getElementById("nuevoUsuario").value.trim();
-        const correo = document.getElementById("correo").value.trim();
         const password = document.getElementById("nuevaPassword").value;
 
-        const usuarios = obtenerUsuarios();
-
-        if (usuarios.some(u => u.usuario === usuario)) {
-            alert("Usuario ya existe");
-            return;
+        let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+        
+        if (usuarios.find(u => u.usuario === usuario)) {
+            return alert("Este nombre de usuario ya existe.");
         }
 
-        usuarios.push({ usuario, correo, password });
-        guardarUsuarios(usuarios);
-
+        
+        usuarios.push({ usuario, password });
+        localStorage.setItem("usuarios", JSON.stringify(usuarios));
+       
         localStorage.setItem("sesionActiva", usuario);
-        window.location.href = "dashboard.html";
+        
+        alert("¡Cuenta creada con éxito! Bienvenido(a) a la Clínica.");
+        window.location.href = "dashboard.html"; 
     });
 }
 
-
+//Gestion de citas
 function iniciarLogin() {
-
     const form = document.getElementById("loginForm");
-    if (!form) return;
-
-    form.addEventListener("submit", e => {
+    form.addEventListener("submit", (e) => {
         e.preventDefault();
+        const usuarioInput = document.getElementById("usuario").value.trim();
+        const passwordInput = document.getElementById("password").value;
 
-        const usuario = document.getElementById("usuario").value.trim();
-        const password = document.getElementById("password").value;
+        const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+        const usuarioValido = usuarios.find(u => u.usuario === usuarioInput && u.password === passwordInput);
 
-        const usuarios = obtenerUsuarios();
-
-        const valido = usuarios.find(u =>
-            u.usuario === usuario && u.password === password
-        );
-
-        if (!valido) {
-            alert("Usuario o contraseña incorrectos");
-            return;
+        if (usuarioValido) {
+            localStorage.setItem("sesionActiva", usuarioInput);
+            window.location.href = "dashboard.html"; 
+        } else {
+            alert("Usuario o contraseña incorrectos.");
         }
-
-        localStorage.setItem("sesionActiva", usuario);
-        window.location.href = "dashboard.html";
     });
-}
-
-
-function protegerPaginas() {
-
-    const protegidas = ["dashboard.html", "citas.html"];
-    const actual = window.location.pathname.split("/").pop();
-
-    if (protegidas.includes(actual) &&
-        !localStorage.getItem("sesionActiva")) {
-
-        window.location.href = "index.html";
-    }
-}
-
-
-function mostrarBienvenida() {
-
-    const bienvenida = document.getElementById("bienvenida");
-    const usuario = localStorage.getItem("sesionActiva");
-
-    if (bienvenida && usuario) {
-        bienvenida.textContent = `Bienvenido, ${usuario}`;
-    }
-}
-
-
-window.logout = function() {
-    localStorage.removeItem("sesionActiva");
-    window.location.href = "index.html";
-}
-
-
-//sistema de citas
-
-function verificarSesionEnCitas() {
-
-    const form = document.getElementById("citaForm");
-    if (!form) return;
-
-    const sesion = localStorage.getItem("sesionActiva");
-    if (!sesion) {
-        window.location.href = "index.html";
-    }
 }
 
 
 function iniciarCitas() {
-
     const form = document.getElementById("citaForm");
-    if (!form) return;
-
-    form.addEventListener("submit", e => {
+    form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const nombre = document.getElementById("nombre").value.trim();
-        const especialidad = document.getElementById("especialidad").value;
-        const fecha = document.getElementById("fecha").value;
-        const hora = document.getElementById("hora").value;
+        const parametrosCorreo = {
+            nombre: document.getElementById("nombre").value.trim(),
+            correo_destino: document.getElementById("correoPaciente").value.trim(),
+            especialidad: document.getElementById("especialidad").value,
+            fecha: document.getElementById("fecha").value,
+            hora: document.getElementById("hora").value
+        };
 
-        const usuarioActivo = localStorage.getItem("sesionActiva");
+        try {
+            await emailjs.send("service_6ef4gos", "template_7vso0bu", parametrosCorreo);
+            alert(`¡Éxito! Confirmación enviada a: ${parametrosCorreo.correo_destino}`);
 
-        if (!fecha || !hora) {
-            alert("Debes seleccionar fecha y hora.");
-            return;
+            guardarCitaLocal(parametrosCorreo);
+            form.reset();
+            mostrarCitas();
+            mostrarHorariosOcupados();
+        } catch (error) {
+            console.error("Error EmailJS:", error);
+            alert("Error al enviar el correo. Revisa la consola y usa modo Incógnito.");
         }
-
-        const citas = obtenerCitas();
-
-        const ocupada = citas.find(c =>
-            c.fecha === fecha &&
-            c.hora === hora
-        );
-
-        if (ocupada) {
-            alert("Ese horario ya está ocupado.");
-            return;
-        }
-
-        citas.push({
-            id: Date.now(),
-            usuario: usuarioActivo,
-            nombre,
-            especialidad,
-            fecha,
-            hora
-        });
-
-        guardarCitas(citas);
-
-        form.reset();
-        mostrarCitas();
-        mostrarHorariosOcupados();
     });
 }
 
-
-function mostrarCitas() {
-
-    const tabla = document.getElementById("tablaCitas");
-    if (!tabla) return;
-
-    const usuarioActivo = localStorage.getItem("sesionActiva");
-    const citas = obtenerCitas().filter(c => c.usuario === usuarioActivo);
-
-    tabla.innerHTML = "";
-
-    citas.forEach(cita => {
-        tabla.innerHTML += `
-            <tr>
-                <td>${cita.nombre}</td>
-                <td>${cita.especialidad}</td>
-                <td>${cita.fecha}</td>
-                <td>${cita.hora}</td>
-                <td>
-                    <button class="btn-danger" style="padding: 5px 10px; font-size: 14px;" onclick="eliminarCita(${cita.id})">
-                       Eliminar
-                </button>
-                </td>
-            </tr>
-        `;
-    });
-}
-
-
-function eliminarCita(id) {
-
-    const citas = obtenerCitas();
-    citas = citas.filter(c => c.id !== id);
-    guardarCitas(citas);
-
-    mostrarCitas();
-    mostrarHorariosOcupados();
-}
-
-
-window.eliminarCita = function(id) {
-    let citas = obtenerCitas();
-    citas = citas.filter(c => c.id !== id);
-    guardarCitas(citas);
-
-    mostrarCitas();
-    mostrarHorariosOcupados();
-}
-function mostrarHorariosOcupados() {
-
-    const contenedor = document.getElementById("horariosOcupados");
-    if (!contenedor) return;
-
-    const citas = obtenerCitas();
-
-    if (citas.length === 0) {
-        contenedor.textContent = "No hay horarios ocupados.";
-        return;
-    }
-
-    contenedor.innerHTML =
-        citas.map(c => `${c.fecha} - ${c.hora}`).join("<br>");
-}
-
-//funciones
-
-function obtenerUsuarios() {
-    return JSON.parse(localStorage.getItem("usuarios")) || [];
-}
-
-function guardarUsuarios(usuarios) {
-    localStorage.setItem("usuarios", JSON.stringify(usuarios));
-}
-
-function obtenerCitas() {
-    return JSON.parse(localStorage.getItem("citas")) || [];
-}
-
-function guardarCitas(citas) {
+function guardarCitaLocal(cita) {
+    const citas = JSON.parse(localStorage.getItem("citas")) || [];
+    cita.id = Date.now();
+    citas.push(cita);
     localStorage.setItem("citas", JSON.stringify(citas));
 }
+
+function mostrarCitas() {
+    const tabla = document.getElementById("tablaCitas");
+    if (!tabla) return;
+    const citas = JSON.parse(localStorage.getItem("citas")) || [];
+    tabla.innerHTML = citas.map(c => `
+        <tr>
+            <td>${c.nombre}</td>
+            <td>${c.especialidad}</td>
+            <td>${c.fecha}</td>
+            <td>${c.hora}</td>
+            <td><button class="btn-danger" onclick="eliminarCita(${c.id})">Eliminar</button></td>
+        </tr>`).join("");
+}
+
+function mostrarHorariosOcupados() {
+    const lista = document.getElementById("horariosOcupados");
+    if (!lista) return;
+    const citas = JSON.parse(localStorage.getItem("citas")) || [];
+    lista.innerHTML = citas.length === 0 
+        ? "<li>No hay citas programadas.</li>" 
+        : citas.map(c => `<li>${c.fecha} - ${c.hora} (${c.especialidad})</li>`).join("");
+}
+window.cerrarSesion = function() {
+    localStorage.removeItem("sesionActiva");
+    alert("Has cerrado sesión correctamente.");
+    window.location.replace("index.html");
+};
+
+window.logout = window.cerrarSesion;
+
+window.eliminarCita = function(id) {
+    let citas = JSON.parse(localStorage.getItem("citas")) || [];
+    citas = citas.filter(c => c.id !== id);
+    localStorage.setItem("citas", JSON.stringify(citas));
+    mostrarCitas();
+    mostrarHorariosOcupados();
+};

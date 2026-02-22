@@ -2,8 +2,16 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gestión de Citas</title>
 <link rel="stylesheet" href="style.css">
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script type="text/javascript">
+   (function(){
+      emailjs.init("F9mM3APkBfNq-vEpV"); 
+   })();
+</script>
 </head>
 <body>
 
@@ -11,14 +19,19 @@
   <h2>Agendar Cita Médica</h2>
 
   <form id="citaForm">
-    <label>Nombre:</label>
-    <input type="text" id="nombre" required>
+    <label>Nombre del Paciente:</label>
+    <input type="text" id="nombre" placeholder="Nombre completo" required>
+  
+    <div class="form-group">
+    <label>Correo Electrónico del Paciente:</label>
+    <input type="email" id="correoPaciente" placeholder="donde recibirá la confirmación" required>
+    </div>
 
     <label>Especialidad:</label>
     <select id="especialidad">
-      <option>Medicina General</option>
-      <option>Pediatría</option>
-      <option>Dermatología</option>
+      <option value="Medicina General">Medicina General</option>
+      <option value="Pediatría">Pediatría</option>
+      <option value="Dermatología">Dermatología</option>
     </select>
 
     <label>Fecha:</label>
@@ -27,14 +40,15 @@
     <label>Hora:</label>
     <input type="time" id="hora" required>
 
-    <button type="submit">Confirmar Cita</button>
+    <button type="submit" class="btn-primary">Confirmar y Enviar Correo</button>
   </form>
 
   <p id="mensaje" style="text-align:center; margin-top:10px;"></p>
 
   <hr>
 
- <table border="1" width="100%">
+  <h3>Mis Citas Agendadas</h3>
+  <table border="1" width="100%">
   <thead>
     <tr>
       <th>Nombre</th>
@@ -48,13 +62,18 @@
 </table>
 
   <br>
-  <button onclick="location.href='dashboard.html'">
-    Volver
+  <button onclick="location.href='dashboard.html'" class="btn-primary">
+    Volver al Panel
   </button>
-  <h4>Horarios ocupados:</h4>
-<ul id="horariosOcupados"></ul>
-<p id="recordatorio" style="color:blue;"></p>
+  
+  <div style="margin-top: 20px; padding: 10px; border: 1px solid #ccc; background: #f9f9f9;">
+    <h4>Horarios ya ocupados:</h4>
+    <ul id="horariosOcupados"></ul>
+  </div>
+
+  <p id="recordatorio" style="color:rgb(156, 156, 202); font-weight: bold;"></p>
 </div>
+
 <script src="script.js"></script>
 </body>
 </html>
